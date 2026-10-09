@@ -19,6 +19,7 @@
 # =============================================================================
 
 import math
+import re
 import sys
 
 import app
@@ -161,6 +162,11 @@ def etapa_5():
     revisar("sin excepciones", len(at.exception), 0)
     revisar("siete pestañas", len(at.tabs), 7)
     revisar("mensaje de recomendación", "Contenedor 20'" in at.success[0].value, True)
+
+    # Un $ sin escapar en un texto markdown se vuelve fórmula LaTeX y daña el texto.
+    textos = [e.value for grupo in (at.success, at.warning, at.info, at.markdown, at.caption) for e in grupo]
+    sin_escapar = [t for t in textos if re.search(r"(?<!\\)\$", t)]
+    revisar("textos con $ sin escapar", sin_escapar, [])
 
     # Cambiar un parámetro desde la barra lateral recalcula la recomendación (Variación 1).
     at.number_input(key="par_v_local").set_value(102000).run()

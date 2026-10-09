@@ -209,6 +209,13 @@ def millones(x):
     return f"${numero(x / 1e6, 2)} M"
 
 
+def md(texto):
+    """Escapa el signo $ para los textos que Streamlit muestra como markdown.
+    Sin esto, el texto entre dos $ se interpreta como fórmula LaTeX.
+    """
+    return texto.replace("$", r"\$")
+
+
 # -----------------------------------------------------------------------------
 # 2. Modelo EOQ
 # -----------------------------------------------------------------------------
@@ -995,7 +1002,7 @@ def resumen_superior(evaluacion):
             ahorro = segunda["costo_total"] - rec["costo_total"]
             texto += (f". Ahorra {pesos(ahorro)} al año ({porcentaje(ahorro / segunda['costo_total'], 2)}) "
                       f"frente a {segunda['alternativa']}.")
-        st.success(texto, icon=":material/verified:")
+        st.success(md(texto), icon=":material/verified:")
 
     columnas = st.columns(3)
     for col, nombre in zip(columnas, ALTERNATIVAS):
@@ -1029,7 +1036,7 @@ def pestana_eoq(evaluacion):
             f"({'por debajo' if fila['%ΔQ'] < 0 else 'por encima'}), pero el TRC solo sube "
             f"{porcentaje(fila['Penalización TRC'], 2)} ({pesos(fila['ΔTRC'])} al año)."
         )
-    st.markdown("\n".join(lineas))
+    st.markdown(md("\n".join(lineas)))
     st.caption("El TRC es plano alrededor de su mínimo: una diferencia grande en cantidad produce una "
                "diferencia pequeña en costo. La tabla muestra la penalización para cualquier Q = k·EOQ: "
                "½(k + 1/k) − 1.")
@@ -1057,8 +1064,8 @@ def pestana_comparativa(evaluacion, p, modo):
     no_factibles = [r for r in evaluacion["resultados"].values() if not r["factible"]]
     for r in no_factibles:
         if rec is not None and r["costo_total"] < rec["costo_total"]:
-            st.warning(f"{r['alternativa']} tendría un costo menor ({pesos(r['costo_total'])}), pero no se puede "
-                       f"recomendar porque no es físicamente factible: {r['motivo']}.",
+            st.warning(md(f"{r['alternativa']} tendría un costo menor ({pesos(r['costo_total'])}), pero no se puede "
+                          f"recomendar porque no es físicamente factible: {r['motivo']}."),
                        icon=":material/warning:")
 
     st.download_button(
@@ -1091,8 +1098,8 @@ def pestana_sensibilidad(evaluacion, p, modo):
                 "al proveedor local.")
     else:
         objetivo = mejor["costo_total"]
-        st.caption(f"Referencia: mejor importación factible = **{mejor['alternativa']}** con Costo Total Anual "
-                   f"{pesos(objetivo)}. El proveedor local es competitivo si su costo total es igual o menor.")
+        st.caption(md(f"Referencia: mejor importación factible = **{mejor['alternativa']}** con Costo Total Anual "
+                      f"{pesos(objetivo)}. El proveedor local es competitivo si su costo total es igual o menor."))
         col1, col2 = st.columns(2)
 
         with col1.container(border=True):
@@ -1134,7 +1141,7 @@ def pestana_sensibilidad(evaluacion, p, modo):
                          f"{pesos(exceso)} por encima de la mejor importación.")
                 if v_100 is not None:
                     texto += f" Con el molde 100 % financiado, el precio tendría que bajar a {pesos(v_100)}."
-                st.write(texto)
+                st.write(md(texto))
 
     st.divider()
     st.subheader("Análisis de sensibilidad")
@@ -1187,7 +1194,7 @@ def pestana_preguntas(p, modo):
 
         with st.container(border=True):
             st.markdown(f"**{pregunta['titulo']}**")
-            st.write(pregunta["texto"])
+            st.write(md(pregunta["texto"]))
             filas = []
             for nombre in ALTERNATIVAS:
                 ra, rd = antes["resultados"][nombre], despues["resultados"][nombre]
@@ -1209,9 +1216,9 @@ def pestana_preguntas(p, modo):
                 margen = (f" La diferencia con la siguiente opción ({factibles_d[1]['alternativa']}) es de "
                           f"{pesos(factibles_d[1]['costo_total'] - factibles_d[0]['costo_total'])} al año.")
             if nombre_a != nombre_d:
-                st.warning(f"**Sí cambia:** pasa de {nombre_a} a {nombre_d}.{margen}", icon=":material/swap_horiz:")
+                st.warning(md(f"**Sí cambia:** pasa de {nombre_a} a {nombre_d}.{margen}"), icon=":material/swap_horiz:")
             else:
-                st.info(f"**No cambia:** se mantiene {nombre_d}.{margen}", icon=":material/check:")
+                st.info(md(f"**No cambia:** se mantiene {nombre_d}.{margen}"), icon=":material/check:")
 
             b1, b2, _ = st.columns([1, 1, 2])
             b1.button(f"Aplicar {c['etiqueta'].lower()} = {numero(pregunta['despues'])}",
