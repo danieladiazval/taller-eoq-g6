@@ -1,0 +1,20 @@
+# Entorno virtual (cada computador crea el suyo con el lanzador)
+.venv/
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Documentos de Word (consigna y entregables): no se suben al repositorio
+*.docx
+~$*.docx
+
+# Archivos temporales de Excel abiertos
+~$*.xlsx
+
+# Configuración local de Claude Code
+.claude/
