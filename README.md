@@ -1,7 +1,7 @@
 # Simulador EOQ — Importación vs. proveedor local (Equipo G6)
 
-App en Streamlit para el taller evaluativo EOQ: compara la importación en contenedor de 20',
-la importación en contenedor de 40' y el proveedor local. Calcula el EOQ, la robustez del TRC,
+App en Streamlit para decidir cómo abastecer una referencia de alta rotación: compara la
+importación en contenedor de 20', la importación en contenedor de 40' y el proveedor local. Calcula el EOQ, la robustez del TRC,
 la restricción de bodega, el Costo Total Anual y los puntos de equilibrio, y recomienda la mejor
 alternativa físicamente factible.
 
@@ -56,25 +56,26 @@ barra lateral y los resultados se recalculan al instante.
 - **Restablecer valores G6** vuelve a los datos originales.
 - **Capacidad adicional de bodega** define qué puede usar una alternativa que no cabe en la
   bodega actual. En *automático* se compara alquiler contra ampliación y se toma la más barata que alcance.
-- **Cargar datos desde el Excel del taller** (opcional) lee cualquier pestaña G1–G6 de
+- **Cargar datos desde el Excel de datos por equipo** (opcional) lee cualquier pestaña G1–G6 de
   `Datos_por_equipo_Taller_EOQ.xlsx`.
 
-Pestañas, en el orden del video:
+Pestañas, en el orden del video para la gerencia:
 
-| Pestaña | Contenido (sección del taller) |
-|---------|--------------------------------|
-| 1. Datos y variables | Clasificación de la información y variables D, A, v, r (Etapa 1) |
-| 2. EOQ y robustez | EOQ sin restricciones, cantidades reales, %ΔQ y penalización del TRC (Etapas 2 y 3, sección 11) |
-| 3. Capacidad de bodega | Las cinco posibilidades de almacenamiento (Etapa 4) |
-| 4. Comparativa | Tabla comparativa, factibilidad, alternativa recomendada y descarga en Excel (secciones 8 y 10) |
-| 5. Gráficas | Diente de sierra en posiciones y curva TRC(Q) (sección 12) |
-| 6. Sensibilidad y equilibrio | Precio máximo del proveedor local, financiación mínima del molde y barrido de parámetros (secciones 13 y 14) |
-| 7. Preguntas de gerencia | Las tres variaciones del equipo G6, con botón para aplicarlas (Parte 4 del video) |
+| Pestaña | Contenido |
+|---------|-----------|
+| 1. Datos y variables | Clasificación de cada dato (adquisición, ordenar, almacenar, capacidad, restricción física o no relevante) y construcción de D, A, v y r |
+| 2. EOQ y robustez | EOQ sin restricciones de las tres alternativas, cantidades reales de contenedor (1.900 y 4.200), %ΔQ y penalización del TRC |
+| 3. Capacidad de bodega | Posiciones requeridas y las cinco posibilidades: 20' y 40' con bodega actual o con alquiler/ampliación, y proveedor local |
+| 4. Comparativa | Costo Total Anual por alternativa, factibilidad física, alternativa recomendada y descarga en Excel |
+| 5. Gráficas | Diente de sierra en posiciones (un año en días, con línea de capacidad) y curva TRC(Q) con EOQ, 20' y 40' marcados |
+| 6. Sensibilidad y equilibrio | Precio máximo competitivo del proveedor local, financiación mínima del molde y barrido de parámetros |
+| 7. Preguntas de gerencia | Las tres variaciones del equipo G6, con botón para aplicarlas y ver si cambia la recomendación |
 
 ## Verificación contra cálculos manuales
 
-`verificar_modelo.py` valida la app por etapas (sección 15 del taller), comparando cada resultado
-contra cálculos hechos a mano y contra los valores del Excel del equipo:
+`verificar_modelo.py` valida la app por etapas, en el mismo orden en que se construyó (funciones del
+modelo, capacidad, escenarios, comparativa, interfaz, gráficas, sensibilidad y equilibrio), comparando
+cada resultado contra cálculos hechos a mano y contra los valores del Excel del equipo:
 
 ```bash
 .venv/bin/python verificar_modelo.py        # macOS, todas las etapas

@@ -1,5 +1,5 @@
 # =============================================================================
-# Verificación del simulador EOQ contra cálculos manuales (sección 15 del taller)
+# Verificación del simulador EOQ contra cálculos manuales
 # -----------------------------------------------------------------------------
 # Valida la app por etapas, en el mismo orden en que se construyó:
 #   1. Funciones del modelo (variables, EOQ, TRC)

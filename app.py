@@ -1,7 +1,7 @@
 # =============================================================================
 # Simulador EOQ — Importación vs. proveedor local (Equipo G6)
 # -----------------------------------------------------------------------------
-# App de Streamlit que apoya la decisión de abastecimiento del taller EOQ:
+# App de Streamlit que apoya la decisión de abastecimiento de una referencia de alta rotación:
 #   1. Clasifica la información del caso y arma las variables D, A, v y r.
 #   2. Calcula el EOQ sin restricciones de las tres alternativas
 #      (contenedor 20', contenedor 40' y proveedor local).
@@ -27,12 +27,12 @@ from plotly.subplots import make_subplots
 # Constantes generales
 # -----------------------------------------------------------------------------
 
-# Catálogo de la información del caso (pestaña G6 del Excel del taller).
+# Catálogo de la información del caso (pestaña G6 del Excel de datos por equipo).
 # Cada entrada tiene:
 #   clave      -> nombre corto que usa el modelo
 #   etiqueta   -> texto exacto de la columna A del Excel (sirve para cargarlo)
 #   unidad     -> unidad que se muestra en la app
-#   clase      -> clasificación de la Etapa 1
+#   clase      -> clasificación de costos (Etapa 1: adquisición, ordenar, almacenar, ...)
 #   grupo      -> sección de la barra lateral donde se edita
 #   tipo       -> "int" (cantidades y pesos) o "pct" (porcentajes, se editan en %)
 #   valor      -> valor del equipo G6 (los porcentajes van en %, p. ej. 20.0)
@@ -456,7 +456,7 @@ def leer_parametros():
 
 
 def cargar_desde_excel():
-    """Lee la pestaña elegida del Excel del taller y copia sus valores a la barra lateral.
+    """Lee la pestaña elegida del Excel de datos por equipo y copia sus valores a la barra lateral.
     Busca cada dato por el texto de la columna A y toma el valor de la columna C.
     """
     archivo = st.session_state.get("archivo_excel")
@@ -599,7 +599,7 @@ FORMATO_EOQ = {
 
 
 def tabla_robustez(evaluacion):
-    """Etapa 3 / sección 11: cantidad real del contenedor frente al EOQ."""
+    """Etapa 3: cantidad real del contenedor frente al EOQ (%ΔQ y penalización del TRC)."""
     filas = []
     for nombre in ALT_IMPORTADAS:
         res = evaluacion["resultados"][nombre]
@@ -635,7 +635,7 @@ def tabla_penalizacion_generica():
 
 
 def tabla_cinco_escenarios(evaluacion, p):
-    """Etapa 4: las cinco posibilidades de almacenamiento que pide la consigna."""
+    """Etapa 4: las cinco posibilidades de almacenamiento (20' y 40' con bodega actual o adicional, y local)."""
     filas = []
 
     def fila(escenario, posiciones, capacidad, cabe, costo, resultado):
@@ -934,7 +934,7 @@ def barra_lateral():
     """Todos los parámetros del caso, agrupados y editables."""
     with st.sidebar:
         st.header("Parámetros del caso")
-        st.caption("Valores iniciales: pestaña **G6** del Excel del taller. Cambia cualquiera y todo se recalcula.")
+        st.caption("Valores iniciales: pestaña **G6** del Excel de datos por equipo. Cambia cualquiera y todo se recalcula.")
         st.button("Restablecer valores G6", on_click=restablecer_g6, width="stretch")
 
         st.selectbox(
@@ -966,7 +966,7 @@ def barra_lateral():
                                   for k in ("r_capital", "r_seguro", "r_deterioro", "r_manejo"))
                     st.caption(f"Tasa de almacenamiento r = **{numero(r_total, 1)} %** anual")
 
-        with st.expander("Cargar datos desde el Excel del taller"):
+        with st.expander("Cargar datos desde el Excel de datos por equipo"):
             archivo = st.file_uploader("Datos_por_equipo_Taller_EOQ.xlsx", type=["xlsx"], key="archivo_excel")
             hojas = []
             if archivo is not None:
